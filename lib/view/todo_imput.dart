@@ -9,11 +9,11 @@ import '../model/function.dart';
 import '../model/kagyo.dart';
 
 class TodoImput extends StatefulWidget {
-  const TodoImput({Key? key, required this.date, required this.itemIndex})
+  const TodoImput({Key? key, required this.date, required this.title})
       : super(key: key);
 
   final String date;
-  final int itemIndex;
+  final String title;
 
   @override
   _TodoImputState createState() => _TodoImputState();
@@ -54,7 +54,8 @@ class _TodoImputState extends State<TodoImput> {
         .collection("kagyoLog")
         .doc(widget.date)
         .collection("log")
-        .orderBy('order') // 'order' パラメーターでソート
+        .orderBy('order')
+        .where("title", isEqualTo: widget.title) // 'order' パラメーターでソート
         .snapshots();
     return stream.map((snapshot) =>
         snapshot.docs.map((doc) => Kagyo.fromMap(doc.data())).toList());
@@ -94,10 +95,8 @@ class _TodoImputState extends State<TodoImput> {
           .collection("log");
 
       // クエリを作成して該当するドキュメントを取得
-      QuerySnapshot querySnapshot = await kagyosCollection
-          .where('now', isEqualTo: true)
-          .where('order', isEqualTo: widget.itemIndex)
-          .get();
+      QuerySnapshot querySnapshot =
+          await kagyosCollection.where('title', isEqualTo: widget.title).get();
 
       // ドキュメントが存在する場合
       if (querySnapshot.docs.isNotEmpty) {
@@ -113,17 +112,19 @@ class _TodoImputState extends State<TodoImput> {
           await documentReference.update(updatedData);
 
           await documentReference.get().then((querySnapshot) async {
-            if (querySnapshot['achieveCount'] >=
-                querySnapshot['targetDayCount']) {
-              Map<String, dynamic> updatedData = {'isDone': true};
-              await documentReference.update(updatedData);
-            }
-
-            if (querySnapshot['achieveCount'] <
-                querySnapshot['targetDayCount']) {
-              if (querySnapshot['isDone'] == true) {
-                Map<String, dynamic> updatedData = {'isDone': false};
+            if (querySnapshot['targetDayCount'] != null) {
+              if (querySnapshot['achieveCount'] >=
+                  querySnapshot['targetDayCount']) {
+                Map<String, dynamic> updatedData = {'isDone': true};
                 await documentReference.update(updatedData);
+              }
+
+              if (querySnapshot['achieveCount'] <
+                  querySnapshot['targetDayCount']) {
+                if (querySnapshot['isDone'] == true) {
+                  Map<String, dynamic> updatedData = {'isDone': false};
+                  await documentReference.update(updatedData);
+                }
               }
             }
           });
@@ -138,17 +139,19 @@ class _TodoImputState extends State<TodoImput> {
           await documentReference.update(updatedData);
 
           await documentReference.get().then((querySnapshot) async {
-            if (querySnapshot['achieveCount'] >=
-                querySnapshot['targetDayCount']) {
-              Map<String, dynamic> updatedData = {'isDone': true};
-              await documentReference.update(updatedData);
-            }
-
-            if (querySnapshot['achieveCount'] <
-                querySnapshot['targetDayCount']) {
-              if (querySnapshot['isDone'] == true) {
-                Map<String, dynamic> updatedData = {'isDone': false};
+            if (querySnapshot['targetDayCount'] != null) {
+              if (querySnapshot['achieveCount'] >=
+                  querySnapshot['targetDayCount']) {
+                Map<String, dynamic> updatedData = {'isDone': true};
                 await documentReference.update(updatedData);
+              }
+
+              if (querySnapshot['achieveCount'] <
+                  querySnapshot['targetDayCount']) {
+                if (querySnapshot['isDone'] == true) {
+                  Map<String, dynamic> updatedData = {'isDone': false};
+                  await documentReference.update(updatedData);
+                }
               }
             }
           });
@@ -170,16 +173,19 @@ class _TodoImputState extends State<TodoImput> {
           await documentReference.update(updatedData);
 
           await documentReference.get().then((querySnapshot) async {
-            if (querySnapshot['achieveTime'] >=
-                querySnapshot['targetDayTime']) {
-              Map<String, dynamic> updatedData = {'isDone': true};
-              await documentReference.update(updatedData);
-            }
-
-            if (querySnapshot['achieveTime'] < querySnapshot['targetDayTime']) {
-              if (querySnapshot['isDone'] == true) {
-                Map<String, dynamic> updatedData = {'isDone': false};
+            if (querySnapshot['targetDayTime'] != null) {
+              if (querySnapshot['achieveTime'] >=
+                  querySnapshot['targetDayTime']) {
+                Map<String, dynamic> updatedData = {'isDone': true};
                 await documentReference.update(updatedData);
+              }
+
+              if (querySnapshot['achieveTime'] <
+                  querySnapshot['targetDayTime']) {
+                if (querySnapshot['isDone'] == true) {
+                  Map<String, dynamic> updatedData = {'isDone': false};
+                  await documentReference.update(updatedData);
+                }
               }
             }
           });
@@ -203,16 +209,19 @@ class _TodoImputState extends State<TodoImput> {
           await documentReference.update(updatedData);
 
           await documentReference.get().then((querySnapshot) async {
-            if (querySnapshot['achieveTime'] >=
-                querySnapshot['targetDayTime']) {
-              Map<String, dynamic> updatedData = {'isDone': true};
-              await documentReference.update(updatedData);
-            }
-
-            if (querySnapshot['achieveTime'] < querySnapshot['targetDayTime']) {
-              if (querySnapshot['isDone'] == true) {
-                Map<String, dynamic> updatedData = {'isDone': false};
+            if (querySnapshot['targetDayTime'] != null) {
+              if (querySnapshot['achieveTime'] >=
+                  querySnapshot['targetDayTime']) {
+                Map<String, dynamic> updatedData = {'isDone': true};
                 await documentReference.update(updatedData);
+              }
+
+              if (querySnapshot['achieveTime'] <
+                  querySnapshot['targetDayTime']) {
+                if (querySnapshot['isDone'] == true) {
+                  Map<String, dynamic> updatedData = {'isDone': false};
+                  await documentReference.update(updatedData);
+                }
               }
             }
           });
@@ -243,7 +252,8 @@ class _TodoImputState extends State<TodoImput> {
                     stream: _fetchKagyosStream(),
                     builder: (context, snapshot) {
                       if (snapshot.hasError) {
-                        return Text('エラーが発生しました'); // エラー時の表示
+                        return Text('エラーが発生しました');
+                        // エラー時の表示
                       } else if (snapshot.data == null ||
                           snapshot.data!.isEmpty) {
                         return Container(
@@ -253,7 +263,11 @@ class _TodoImputState extends State<TodoImput> {
                           ),
                         ); // データが null または空の場合は何も表示しない
                       } else {
-                        kagyo = snapshot.data![widget.itemIndex];
+                        if (snapshot.data!.length == 1) {
+                          kagyo = snapshot.data!.first;
+                        } else {
+                          return Text("エラーが発生しました");
+                        }
 
                         if (kagyo.achieveTime == null) {
                           kagyo.achieveTime = 0;
@@ -436,8 +450,8 @@ class _TodoImputState extends State<TodoImput> {
                                                             TodoImputCount(
                                                                 date:
                                                                     widget.date,
-                                                                itemIndex: widget
-                                                                    .itemIndex)));
+                                                                title: widget
+                                                                    .title)));
                                               },
                                               child: Text("カウンターで計測する")),
                                         ])
@@ -653,8 +667,8 @@ class _TodoImputState extends State<TodoImput> {
                                                             TodoImputTime(
                                                                 date:
                                                                     widget.date,
-                                                                itemIndex: widget
-                                                                    .itemIndex)));
+                                                                title: widget
+                                                                    .title)));
                                               },
                                               child: Text("タイマーで計測する")),
                                         ])

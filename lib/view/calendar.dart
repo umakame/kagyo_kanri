@@ -104,19 +104,19 @@ class _CalendarState extends State<Calendar> {
     return dateTime;
   }
 
-  Future<void> fireStoreDelete(int tappedIndex) async {
+  Future<void> fireStoreDelete(String title) async {
     final querySnapshot = await FirebaseFirestore.instance
         .collection('users')
         .doc(account.userId)
         .collection("kagyoLog")
         .doc(selectedDay)
-        .collection("log").where("order", isEqualTo: tappedIndex).get();
+        .collection("log")
+        .where("title", isEqualTo: title)
+        .get();
 
     for (var doc in querySnapshot.docs) {
       await doc.reference.delete();
     }
-
-    
   }
 
   @override
@@ -168,31 +168,52 @@ class _CalendarState extends State<Calendar> {
                 }
 
                 return Container(
-                    color: Colors.grey,
+                    color: Color(0xFFe6e6fa),
                     child: _buildDefaultSingleDatePickerWithValue());
               }),
-          Row(
-            children: [
-              Text(
-                convertDateString(selectedDay),
-                style: TextStyle(fontSize: 20),
-              ),
-              Container(
-                  alignment: Alignment.centerRight,
-                  child: int.parse(selectedDay) <= int.parse(today())
-                      ? ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    CalendarImport(date: selectedDay),
-                              ),
-                            );
-                          },
-                          child: Icon(Icons.add_box_outlined))
-                      : Container()),
-            ],
+          Container(
+            margin: EdgeInsets.only(left: 110),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  child: Text(
+                    convertDateString(selectedDay),
+                    style: TextStyle(fontSize: 20),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                if (int.parse(selectedDay) <= int.parse(today()))
+                  Container(
+                    alignment: Alignment.centerRight,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                CalendarImport(date: selectedDay),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Text(
+                            '追加',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ),
+
           StreamBuilder<List<Kagyo>>(
             stream: _fetchKagyosStream(selectedDay),
             builder: (context, snapshot) {
@@ -224,18 +245,13 @@ class _CalendarState extends State<Calendar> {
                           // A motion is a widget used to control how the pane animates.
                           motion: const DrawerMotion(),
 
-                          // A pane can dismiss the Slidable.
-                          dismissible: DismissiblePane(onDismissed: () async{
-                            await fireStoreDelete(index);
-                            setState(() {});
-                          }),
-
                           // All actions are defined in the children parameter.
                           children: [
                             // A SlidableAction can have an icon and/or a label.
                             SlidableAction(
-                              onPressed: (_) async{
-                                await fireStoreDelete(index);
+                              onPressed: (_) async {
+                                await fireStoreDelete(
+                                    snapshot.data![index].title);
                                 setState(() {});
                               },
                               backgroundColor: Color(0xFFFE4A49),
@@ -250,7 +266,8 @@ class _CalendarState extends State<Calendar> {
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) => TodoImput(
-                                    date: selectedDay, itemIndex: index),
+                                    date: selectedDay,
+                                    title: snapshot.data![index].title),
                               ),
                             );
                           },
@@ -342,7 +359,7 @@ class _CalendarState extends State<Calendar> {
                     : null,
             border:
                 isTodayDate ? Border.all(color: Colors.blue, width: 2) : null,
-            borderRadius: isTodayDate ? BorderRadius.circular(50) : null,
+            borderRadius: isTodayDate ? BorderRadius.circular(10) : null,
           ),
           child: Center(child: Text(date.day.toString())),
         );

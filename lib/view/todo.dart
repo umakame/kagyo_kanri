@@ -179,7 +179,7 @@ class _HomeState extends State<Todo> {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (context) => TodoImput(
-                                      date: today(), itemIndex: index),
+                                      date: today(), title: kagyoList[index].title),
                                 ),
                               );
                             },

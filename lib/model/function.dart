@@ -40,13 +40,12 @@ Future<void> checkCompleted(String date) async {
 
   // ドキュメントの取得
   QuerySnapshot querySnapshotCount =
-      await kagyosCollection.where('now', isEqualTo: true).get();
+      await kagyosCollection /*.where('now', isEqualTo: true)*/ .get();
 
   QuerySnapshot querySnapshotIsDone = await kagyosCollection
       .where('isDone', isEqualTo: true)
-      .where("now", isEqualTo: true)
+      //.where("now", isEqualTo: true)
       .get();
-
 
   if (querySnapshotCount.size == querySnapshotIsDone.size) {
     CollectionReference docCompleted = FirebaseFirestore.instance

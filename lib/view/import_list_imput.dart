@@ -354,7 +354,7 @@ class _ImportListImputState extends State<ImportListImput> {
                         width: double.infinity,
                         padding: EdgeInsets.only(left: 30),
                         child: Text(
-                          selectedValueType == "count" ? "目標回数(回)" : "目標時間",
+                          selectedValueType == "count" ? "全体の目標回数(回)" : "全体の目標時間",
                           style: TextStyle(
                               fontSize: 15, fontWeight: FontWeight.bold),
                         )),
@@ -372,12 +372,12 @@ class _ImportListImputState extends State<ImportListImput> {
                               controller: targetAllCountController,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return '目標回数を入力して下さい';
+                                  return '全体の目標回数を入力して下さい';
                                 }
                                 return null;
                               },
                               decoration: InputDecoration(
-                                labelText: "目標回数(回)",
+                                labelText: "全体の目標回数(回)",
                                 border: OutlineInputBorder(),
                               ),
                             ),
@@ -395,12 +395,12 @@ class _ImportListImputState extends State<ImportListImput> {
                                   controller: targetAllTimeController,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
-                                      return '目標時間を入力して下さい';
+                                      return '全体の目標時間を入力して下さい';
                                     }
                                     return null;
                                   },
                                   decoration: InputDecoration(
-                                    labelText: "目標時間",
+                                    labelText: "全体の目標時間",
                                     border: OutlineInputBorder(),
                                   ),
                                 ),
@@ -453,7 +453,7 @@ class _ImportListImputState extends State<ImportListImput> {
                         width: double.infinity,
                         padding: EdgeInsets.only(left: 30),
                         child: Text(
-                          selectedValueType == "count" ? "目標回数(回)" : "目標時間",
+                          selectedValueType == "count" ? "1日の目標回数(回)" : "1日の目標時間",
                           style: TextStyle(
                               fontSize: 15, fontWeight: FontWeight.bold),
                         )),

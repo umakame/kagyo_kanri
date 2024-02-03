@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:kagyo_kanri/model/date_competeted.dart';
-import 'package:kagyo_kanri/view/todo_imput.dart';
 import 'package:sn_progress_dialog/progress_dialog.dart';
 import '../model/kagyo.dart';
 import '../main.dart';
@@ -160,8 +159,7 @@ class _ReportState extends State<Report> {
           title: Text("レポート"),
         ),
         body: Column(
-          children: [
-          ],
+          children: [],
         ),
       ),
     );
@@ -231,49 +229,8 @@ class _ReportState extends State<Report> {
                         itemCount: snapshot.data!.length,
                         itemBuilder: (BuildContext context, int index) {
                           return InkWell(
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => TodoImput(
-                                      date: selectedDay, itemIndex: index),
-                                ),
-                              );
-                            },
-                            child: Container(
-                              padding: EdgeInsets.only(top: 10, bottom: 5),
-                              margin: EdgeInsets.only(
-                                  top: 5, bottom: 5, right: 10, left: 10),
-                              decoration: BoxDecoration(
-                                color: kagyoList[index].isDone == false
-                                    ? Color(0xFFe6e6fa)
-                                    : Colors.grey,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Row(
-                                children: [
-                                  Checkbox(
-                                    value: isCheckedList[index],
-                                    onChanged: (value) async {
-                                      pd.show(msg: "書き込み中...");
-                                      await isDoneUpdate(index, !value!);
-                                      isCheckedList[index] = !value;
-                                      await checkCompleted(selectedDay);
-                                      setState(() {});
-                                      pd.close();
-                                    },
-                                  ),
-                                  Text(
-                                    kagyoList[index].title,
-                                    maxLines: null,
-                                    style: TextStyle(
-                                        decoration:
-                                            kagyoList[index].isDone == true
-                                                ? TextDecoration.lineThrough
-                                                : null),
-                                  ),
-                                ],
-                              ),
-                            ),
+                            onTap: () {},
+                            child: Container(),
                           );
                         },
                       );

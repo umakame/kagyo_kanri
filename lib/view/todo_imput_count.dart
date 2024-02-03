@@ -4,10 +4,10 @@ import '../model/function.dart';
 import '../main.dart';
 
 class TodoImputCount extends StatefulWidget {
-  const TodoImputCount({Key? key,required this.date, required this.itemIndex}) : super(key: key);
+  const TodoImputCount({Key? key,required this.date, required this.title}) : super(key: key);
 
   final String date;
-  final int itemIndex;
+  final String title;
 
   @override
   _TodoImputCountState createState() => _TodoImputCountState();
@@ -26,8 +26,7 @@ class _TodoImputCountState extends State<TodoImputCount> {
 
       // クエリを作成して該当するドキュメントを取得
       QuerySnapshot querySnapshot = await kagyosCollection
-          .where('now', isEqualTo: true)
-          .where('order', isEqualTo: widget.itemIndex)
+          .where('title', isEqualTo:widget.title)
           .get();
 
       // ドキュメントが存在する場合

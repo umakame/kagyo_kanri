@@ -78,6 +78,10 @@ class _CalendarImportState extends State<CalendarImport> {
         "achieveTime": selectedValueType == "time"?selectedValueUnit == "minute"
             ? int.parse(achieveTimeController.text)
             : int.parse(achieveTimeController.text * 60):0,
+        "targetDayCount":null,
+        "tartgetAllCount":null,
+        "targetDayTime":null,
+        "targetAllTime":null
       });
     } catch (e) {
       print(e);
@@ -321,6 +325,7 @@ class _CalendarImportState extends State<CalendarImport> {
                   pd.show(msg: "書き込み中...");
                   await firestoreSet();
                   pd.close();
+                  Navigator.pop(context);
 
                 },
                 child: Text("追加"),

@@ -30,15 +30,15 @@ class _ImportListState extends State<ImportList> {
           .where("title", isEqualTo: kagyoList[i].title)
           .get();
 
-      if (allTargetSnapshots == null || allTargetSnapshots.size == 0) {
+      if (allTargetSnapshots.size == 0) {
         if (kagyoList[i].type == "count") {
           await kagyoAllTarget
               .doc()
-              .set({"targetAllCount": kagyoList[i].targetAllCount});
+              .set({"title":kagyoList[i].title,"targetAllCount": kagyoList[i].targetAllCount});
         } else if (kagyoList[i].type == "time") {
           await kagyoAllTarget
               .doc()
-              .set({"targetAllCount": kagyoList[i].targetAllTime});
+              .set({"title":kagyoList[i].title,"targetAllTime": kagyoList[i].targetAllTime});
         }
 
 
@@ -51,7 +51,7 @@ class _ImportListState extends State<ImportList> {
           } else if (kagyoList[i].type == "time") {
             await kagyoAllTarget
                 .doc(doc.id)
-                .update({"targetAllCount": kagyoList[i].targetAllTime});
+                .update({"targetAllTime": kagyoList[i].targetAllTime});
           }
         }
       }
@@ -161,12 +161,6 @@ class _ImportListState extends State<ImportList> {
                       endActionPane: ActionPane(
                         // A motion is a widget used to control how the pane animates.
                         motion: const DrawerMotion(),
-
-                        // A pane can dismiss the Slidable.
-                        dismissible: DismissiblePane(onDismissed: () {
-                          kagyoList.removeAt(index);
-                          setState(() {});
-                        }),
 
                         // All actions are defined in the children parameter.
                         children: [
