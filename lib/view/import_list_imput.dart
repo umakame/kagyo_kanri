@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../model/kagyo.dart';
-import 'main.dart';
+import '../main.dart';
 
 class ImportListImput extends StatefulWidget {
   const ImportListImput({Key? key, required this.kagyo, required this.index})

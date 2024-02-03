@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../model/function.dart';
-import 'main.dart';
+import '../main.dart';
 
 class TodoImputCount extends StatefulWidget {
   const TodoImputCount({Key? key,required this.date, required this.itemIndex}) : super(key: key);

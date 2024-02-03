@@ -2,12 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:intl/date_symbol_data_file.dart';
-import '../model/FirebaseAuth.dart';
-import '../model/account.dart';
-import 'home.dart';
-import 'login.dart';
-import 'firebase_options.dart';
+import 'model/FirebaseAuth.dart';
+import 'model/account.dart';
+import 'view/home.dart';
+import 'view/login.dart';
+import 'view/firebase_options.dart';
 import 'package:intl/intl.dart';
 
 AuthService authService = AuthService();

@@ -7,10 +7,11 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../model/function.dart';
-import 'main.dart';
+import '../main.dart';
 
 class TodoImputTime extends StatefulWidget {
-  const TodoImputTime({Key? key,required this.date, required this.itemIndex}) : super(key: key);
+  const TodoImputTime({Key? key, required this.date, required this.itemIndex})
+      : super(key: key);
 
   final String date;
   final int itemIndex;
@@ -45,7 +46,9 @@ class _TodoImputTimeState extends State<TodoImputTime> {
       CollectionReference kagyosCollection = FirebaseFirestore.instance
           .collection('users')
           .doc(account!.userId)
-          .collection("kagyoLog").doc(widget.date).collection("log");
+          .collection("kagyoLog")
+          .doc(widget.date)
+          .collection("log");
 
       // クエリを作成して該当するドキュメントを取得
       QuerySnapshot querySnapshot = await kagyosCollection
@@ -65,8 +68,7 @@ class _TodoImputTimeState extends State<TodoImputTime> {
         await documentReference.update(updatedData);
 
         await documentReference.get().then((querySnapshot) async {
-          if (querySnapshot['achieveTime'] >=
-              querySnapshot['targetDayTime']) {
+          if (querySnapshot['achieveTime'] >= querySnapshot['targetDayTime']) {
             Map<String, dynamic> updatedData = {'isDone': true};
             await documentReference.update(updatedData);
           }
@@ -78,8 +80,6 @@ class _TodoImputTimeState extends State<TodoImputTime> {
             }
           }
         });
-
-
       } else {
         print('該当するドキュメントが見つかりませんでした');
       }
@@ -207,7 +207,7 @@ class _TodoImputTimeState extends State<TodoImputTime> {
                                 var minutes = (timeInSeconds ~/ 60);
                                 time = minutes;
 
-                                if(selectedValueUnit == "hour"){
+                                if (selectedValueUnit == "hour") {
                                   minutes = (minutes ~/ 60);
                                 }
 
@@ -333,7 +333,7 @@ class _TodoImputTimeState extends State<TodoImputTime> {
                         ],
                       ),
                       ElevatedButton(
-                        onPressed: () async{
+                        onPressed: () async {
                           await _showRegisterDialog();
                           await checkCompleted(widget.date);
                         },

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kagyo_kanri/view/todo.dart';
 
+import 'calendar.dart';
 import 'report.dart';
 import 'import.dart';
 
@@ -20,7 +21,7 @@ class _HomeState extends State<Home> {
     _selectedIndex = 0;
   }
 
-  final List<Widget> _screens = const [Todo(), Report(), Import()];
+  final List<Widget> _screens = const [Todo(), Report(),Calendar(), Import()];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -39,6 +40,8 @@ class _HomeState extends State<Home> {
           BottomNavigationBarItem(icon: Icon(Icons.home), label: '今日の加行'),
           BottomNavigationBarItem(
               icon: Icon(Icons.analytics), label: 'レポート'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.calendar_month), label: 'カレンダー'),
           BottomNavigationBarItem(
               icon: Icon(Icons.import_export), label: 'インポート'),
         ],

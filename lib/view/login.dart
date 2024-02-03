@@ -7,7 +7,7 @@ import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 import '../model/account.dart';
 import 'createAccount.dart';
 import 'home.dart';
-import 'main.dart';
+import '../main.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);

@@ -4,7 +4,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:kagyo_kanri/view/import_list_imput.dart';
 import '../model/kagyo.dart';
 import 'package:reorderables/reorderables.dart';
-import 'main.dart';
+import '../main.dart';
 
 class ImportList extends StatefulWidget {
   const ImportList({Key? key}) : super(key: key);
@@ -17,7 +17,7 @@ class _ImportListState extends State<ImportList> {
   List<Kagyo> kagyoList = [];
 
 
-  Future<void> firestoreGet() async {
+  Future<void> firestoreSet() async {
     final firestoreInstance = FirebaseFirestore.instance;
 
     CollectionReference kagyoAllTarget = firestoreInstance
@@ -225,7 +225,7 @@ class _ImportListState extends State<ImportList> {
         ),
         bottomNavigationBar: ElevatedButton(
           onPressed: () async {
-            await firestoreGet();
+            await firestoreSet();
           },
           child: Text("新しい加行として設定する"),
         ),

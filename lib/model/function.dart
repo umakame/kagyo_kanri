@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
-import '../view/main.dart';
+import '../main.dart';
 
 String today() {
   DateTime now = DateTime.now();
@@ -35,7 +35,7 @@ Future<void> checkCompleted(String date) async {
       .collection('users')
       .doc(account.userId)
       .collection("kagyoLog")
-      .doc(today())
+      .doc(date)
       .collection("log");
 
   // ドキュメントの取得
@@ -57,14 +57,12 @@ Future<void> checkCompleted(String date) async {
     QuerySnapshot querySnapshotIsDone =
         await docCompleted.where('date', isEqualTo: date).get();
 
-    print(querySnapshotIsDone.size);
-
     Map<String, dynamic> data =
         querySnapshotIsDone.docs[0].data() as Map<String, dynamic>;
 
     data["completed"] = true;
 
-    await docCompleted.doc(today()).update(data);
+    await docCompleted.doc(date).update(data);
   } else {
     CollectionReference docCompleted = FirebaseFirestore.instance
         .collection('users')
@@ -82,7 +80,7 @@ Future<void> checkCompleted(String date) async {
 
       data["completed"] = false;
 
-      await docCompleted.doc(today()).update(data);
+      await docCompleted.doc(date).update(data);
     }
   }
 }

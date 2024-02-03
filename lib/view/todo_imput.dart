@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:kagyo_kanri/view/main.dart';
+import 'package:kagyo_kanri/main.dart';
 import 'package:kagyo_kanri/view/todo_imput_count.dart';
 import 'package:kagyo_kanri/view/todo_imput_time.dart';
 import 'package:sn_progress_dialog/progress_dialog.dart';
@@ -9,7 +9,8 @@ import '../model/function.dart';
 import '../model/kagyo.dart';
 
 class TodoImput extends StatefulWidget {
-  const TodoImput({Key? key, required this.date, required this.itemIndex}) : super(key: key);
+  const TodoImput({Key? key, required this.date, required this.itemIndex})
+      : super(key: key);
 
   final String date;
   final int itemIndex;
@@ -39,7 +40,6 @@ class _TodoImputState extends State<TodoImput> {
   var selectedValueEditTimeUnit = "minute";
   var selectedValueAddTimeUnit = "minute";
 
-
   @override
   void initState() {
     super.initState();
@@ -51,8 +51,9 @@ class _TodoImputState extends State<TodoImput> {
     final stream = firestore
         .collection('users')
         .doc(account!.userId)
-        .collection("kagyoLog").doc(widget.date).collection("log")
-        .where('now', isEqualTo: true)
+        .collection("kagyoLog")
+        .doc(widget.date)
+        .collection("log")
         .orderBy('order') // 'order' パラメーターでソート
         .snapshots();
     return stream.map((snapshot) =>
@@ -88,7 +89,9 @@ class _TodoImputState extends State<TodoImput> {
       CollectionReference kagyosCollection = FirebaseFirestore.instance
           .collection('users')
           .doc(account!.userId)
-          .collection("kagyoLog").doc(widget.date).collection("log");
+          .collection("kagyoLog")
+          .doc(widget.date)
+          .collection("log");
 
       // クエリを作成して該当するドキュメントを取得
       QuerySnapshot querySnapshot = await kagyosCollection
@@ -233,10 +236,7 @@ class _TodoImputState extends State<TodoImput> {
         child: Scaffold(
             appBar: AppBar(
               title: Text("詳細"),
-              backgroundColor: Theme
-                  .of(context)
-                  .colorScheme
-                  .inversePrimary,
+              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
             ),
             body: SingleChildScrollView(
                 child: StreamBuilder<List<Kagyo>>(
@@ -247,10 +247,7 @@ class _TodoImputState extends State<TodoImput> {
                       } else if (snapshot.data == null ||
                           snapshot.data!.isEmpty) {
                         return Container(
-                          height: MediaQuery
-                              .of(context)
-                              .size
-                              .height, // 薄暗い背景
+                          height: MediaQuery.of(context).size.height, // 薄暗い背景
                           child: Center(
                             child: CircularProgressIndicator(), // サークルインジケーター
                           ),
@@ -272,383 +269,395 @@ class _TodoImputState extends State<TodoImput> {
                               Text(kagyo.title),
                               kagyo.isTime == true
                                   ? Text(
-                                  "指定時間:" + kagyo.specifiedTime.toString())
+                                      "指定時間:" + kagyo.specifiedTime.toString())
                                   : Container(),
                               kagyo.isTime == false
                                   ? kagyo.type == "count"
-                                  ? Text("目標回数:" +
-                                  kagyo.targetAllCount.toString() +
-                                  "回")
-                                  : Text("目標時間:" +
-                                  timeConvert(kagyo.targetAllTime!))
+                                      ? Text("目標回数:" +
+                                          kagyo.targetAllCount.toString() +
+                                          "回")
+                                      : Text("目標時間:" +
+                                          timeConvert(kagyo.targetAllTime!))
                                   : Container(),
                               kagyo.isTime == false
                                   ? kagyo.type == "count"
-                                  ? Text("達成回数:" +
-                                  kagyo.targetAllCount.toString() +
-                                  "回")
-                                  : Text("達成時間:" +
-                                  timeConvert(kagyo.targetAllTime!))
+                                      ? Text("達成回数:" +
+                                          kagyo.targetAllCount.toString() +
+                                          "回")
+                                      : Text("達成時間:" +
+                                          timeConvert(kagyo.targetAllTime!))
                                   : Container(),
                               kagyo.isTime == false
                                   ? kagyo.type == "count"
-                                  ? Text("1日の目標回数:" +
-                                  kagyo.targetDayCount.toString() +
-                                  "回")
-                                  : Text("１日の目標時間:" +
-                                  timeConvert(kagyo.targetDayTime!))
+                                      ? Text("1日の目標回数:" +
+                                          kagyo.targetDayCount.toString() +
+                                          "回")
+                                      : Text("１日の目標時間:" +
+                                          timeConvert(kagyo.targetDayTime!))
                                   : Container(),
                               kagyo.isTime == false
                                   ? kagyo.type == "count"
-                                  ? Text("今日の達成回数:" +
-                                  kagyo.achieveCount.toString() +
-                                  "回")
-                                  : Text("今日の達成時間:" +
-                                  timeConvert(kagyo.achieveTime!))
+                                      ? Text("今日の達成回数:" +
+                                          kagyo.achieveCount.toString() +
+                                          "回")
+                                      : Text("今日の達成時間:" +
+                                          timeConvert(kagyo.achieveTime!))
                                   : Container(),
                               SizedBox(
                                 height: 50,
                               ),
                               kagyo.isTime == false
                                   ? kagyo.type == "count"
-                                  ? Column(children: [
-                                Row(children: [
-                                  SizedBox(width: 20),
-                                  Expanded(
-                                      child: Container(
-                                        color: Color(0xFFe6e6fa),
-                                        child: Form(
-                                          key: formKeyEditCount,
-                                          child: TextFormField(
-                                            validator: (value) {
-                                              // メールアドレスが入力されていない場合
-                                              if (value == null ||
-                                                  value.isEmpty) {
-                                                // 問題があるときはメッセージを返す
-                                                return '回数を入力して下さい';
-                                              }
-                                              // 問題ないときはnullを返す
-                                              return null;
-                                            },
-                                            decoration: InputDecoration(
-                                                enabledBorder:
-                                                OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                      color:
-                                                      Colors.black),
+                                      ? Column(children: [
+                                          Row(children: [
+                                            SizedBox(width: 20),
+                                            Expanded(
+                                                child: Container(
+                                              color: Color(0xFFe6e6fa),
+                                              child: Form(
+                                                key: formKeyEditCount,
+                                                child: TextFormField(
+                                                  validator: (value) {
+                                                    // メールアドレスが入力されていない場合
+                                                    if (value == null ||
+                                                        value.isEmpty) {
+                                                      // 問題があるときはメッセージを返す
+                                                      return '回数を入力して下さい';
+                                                    }
+                                                    // 問題ないときはnullを返す
+                                                    return null;
+                                                  },
+                                                  decoration: InputDecoration(
+                                                      enabledBorder:
+                                                          OutlineInputBorder(
+                                                        borderSide: BorderSide(
+                                                            color:
+                                                                Colors.black),
+                                                      ),
+                                                      labelText: "今日の達成回数"),
+                                                  keyboardType:
+                                                      TextInputType.number,
+                                                  inputFormatters: [
+                                                    FilteringTextInputFormatter
+                                                        .digitsOnly
+                                                  ],
+                                                  textAlign: TextAlign.end,
+                                                  controller:
+                                                      editCountController,
                                                 ),
-                                                labelText: "今日の達成回数"),
-                                            keyboardType:
-                                            TextInputType.number,
-                                            inputFormatters: [
-                                              FilteringTextInputFormatter
-                                                  .digitsOnly
-                                            ],
-                                            textAlign: TextAlign.end,
-                                            controller:
-                                            editCountController,
-                                          ),
-                                        ),
-                                      )),
-                                  SizedBox(width: 20),
-                                  ElevatedButton(
-                                      onPressed: () async {
-                                        if (formKeyEditCount
-                                            .currentState!
-                                            .validate()) {
-                                          pd.show(msg: "書き込み中...");
-                                          await firebaseUpdate(
-                                              "editCount");
-                                          await checkCompleted(widget.date);
-                                          pd.close();
-                                        }
-                                      },
-                                      child: Text("変更")),
-                                  SizedBox(width: 20),
-                                ]),
-                                SizedBox(height: 20),
-                                Row(
-                                  children: [
-                                    SizedBox(width: 20),
-                                    Expanded(
-                                        child: Container(
-                                          color: Color(0xFFe6e6fa),
-                                          child: Form(
-                                            key: formKeyAddCount,
-                                            child: TextFormField(
-                                              validator: (value) {
-                                                // メールアドレスが入力されていない場合
-                                                if (value == null ||
-                                                    value.isEmpty) {
-                                                  // 問題があるときはメッセージを返す
-                                                  return '回数を入力して下さい';
-                                                }
-                                                // 問題ないときはnullを返す
-                                                return null;
-                                              },
-                                              decoration: InputDecoration(
-                                                  enabledBorder:
-                                                  OutlineInputBorder(
-                                                    borderSide:
-                                                    BorderSide(
-                                                        color: Colors
-                                                            .black),
+                                              ),
+                                            )),
+                                            SizedBox(width: 20),
+                                            ElevatedButton(
+                                                onPressed: () async {
+                                                  if (formKeyEditCount
+                                                      .currentState!
+                                                      .validate()) {
+                                                    pd.show(msg: "書き込み中...");
+                                                    await firebaseUpdate(
+                                                        "editCount");
+                                                    await checkCompleted(
+                                                        widget.date);
+                                                    pd.close();
+                                                  }
+                                                },
+                                                child: Text("変更")),
+                                            SizedBox(width: 20),
+                                          ]),
+                                          SizedBox(height: 20),
+                                          Row(
+                                            children: [
+                                              SizedBox(width: 20),
+                                              Expanded(
+                                                  child: Container(
+                                                color: Color(0xFFe6e6fa),
+                                                child: Form(
+                                                  key: formKeyAddCount,
+                                                  child: TextFormField(
+                                                    validator: (value) {
+                                                      // メールアドレスが入力されていない場合
+                                                      if (value == null ||
+                                                          value.isEmpty) {
+                                                        // 問題があるときはメッセージを返す
+                                                        return '回数を入力して下さい';
+                                                      }
+                                                      // 問題ないときはnullを返す
+                                                      return null;
+                                                    },
+                                                    decoration: InputDecoration(
+                                                        enabledBorder:
+                                                            OutlineInputBorder(
+                                                          borderSide:
+                                                              BorderSide(
+                                                                  color: Colors
+                                                                      .black),
+                                                        ),
+                                                        labelText: "追加したい回数"),
+                                                    keyboardType:
+                                                        TextInputType.number,
+                                                    inputFormatters: [
+                                                      FilteringTextInputFormatter
+                                                          .digitsOnly
+                                                    ],
+                                                    textAlign: TextAlign.end,
+                                                    controller:
+                                                        addCountController,
                                                   ),
-                                                  labelText: "追加したい回数"),
-                                              keyboardType:
-                                              TextInputType.number,
-                                              inputFormatters: [
-                                                FilteringTextInputFormatter
-                                                    .digitsOnly
-                                              ],
-                                              textAlign: TextAlign.end,
-                                              controller:
-                                              addCountController,
-                                            ),
-                                          ),
-                                        )),
-                                    SizedBox(width: 20),
-                                    ElevatedButton(
-                                        onPressed: () async {
-                                          if (formKeyAddCount
-                                              .currentState!
-                                              .validate()) {
-                                            pd.show(msg: "書き込み中...");
-                                            await firebaseUpdate(
-                                                "addCount");
-                                            await checkCompleted(widget.date);
-                                            pd.close();
-                                          }
-                                        },
-                                        child: Text(
-                                          "追加",
-                                        )),
-                                    SizedBox(width: 20),
-                                  ],
-                                ),
-                                SizedBox(height: 20),
-                                ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            // （2） 実際に表示するページ(ウィジェット)を指定する
-                                              builder: (context) =>
-                                                  TodoImputCount(date:widget.date,itemIndex:widget.itemIndex)));
-                                    },
-                                    child: Text("カウンターで計測する")),
-                              ])
-                                  : Column(children: [
-                                Row(children: [
-                                  SizedBox(width: 20),
-                                  Expanded(
-                                      child: Container(
-                                        color: Color(0xFFe6e6fa),
-                                        child: Form(
-                                          key: formKeyEditTime,
-                                          child: TextFormField(
-                                            validator: (value) {
-                                              // メールアドレスが入力されていない場合
-                                              if (value == null ||
-                                                  value.isEmpty) {
-                                                // 問題があるときはメッセージを返す
-                                                return '時間を入力して下さい';
-                                              }
-                                              // 問題ないときはnullを返す
-                                              return null;
-                                            },
-                                            decoration: InputDecoration(
-                                                enabledBorder:
-                                                OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                      color:
-                                                      Colors.black),
                                                 ),
-                                                labelText: "今日の達成時間"),
-                                            keyboardType:
-                                            TextInputType.number,
-                                            inputFormatters: [
-                                              FilteringTextInputFormatter
-                                                  .digitsOnly
+                                              )),
+                                              SizedBox(width: 20),
+                                              ElevatedButton(
+                                                  onPressed: () async {
+                                                    if (formKeyAddCount
+                                                        .currentState!
+                                                        .validate()) {
+                                                      pd.show(msg: "書き込み中...");
+                                                      await firebaseUpdate(
+                                                          "addCount");
+                                                      await checkCompleted(
+                                                          widget.date);
+                                                      pd.close();
+                                                    }
+                                                  },
+                                                  child: Text(
+                                                    "追加",
+                                                  )),
+                                              SizedBox(width: 20),
                                             ],
-                                            textAlign: TextAlign.end,
-                                            controller:
-                                            editTimeController,
                                           ),
-                                        ),
-                                      )),
-                                  SizedBox(width: 20),
-                                  Container(
-                                    height: 50,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey,
-                                          offset: Offset(1.0, 1.0),
-                                          blurRadius: 0.8,
-                                          spreadRadius: 0.8,
-                                        ),
-                                      ],
-                                    ),
-                                    child:
-                                    DropdownButtonHideUnderline(
-                                      child: DropdownButton(
-                                        items: const [
-                                          DropdownMenuItem(
-                                            value: 'minute',
-                                            child: Text('分',
-                                                style: TextStyle(
-                                                    fontSize: 20)),
-                                          ),
-                                          DropdownMenuItem(
-                                            value: 'hour',
-                                            child: Text('時間',
-                                                style: TextStyle(
-                                                    fontSize: 20)),
-                                          ),
-                                        ],
-                                        value:
-                                        selectedValueEditTimeUnit,
-                                        onChanged: (String? value) {
-                                          setState(() {
-                                            selectedValueEditTimeUnit =
-                                            value!;
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(width: 20),
-                                  ElevatedButton(
-                                      onPressed: () async {
-                                        if (formKeyEditTime
-                                            .currentState!
-                                            .validate()) {
-                                          pd.show(msg: "書き込み中...");
-                                          await firebaseUpdate(
-                                              "editTime");
-                                          await checkCompleted(widget.date);
-                                          pd.close();
-                                        }
-                                      },
-                                      child: Text("変更")),
-                                  SizedBox(width: 20),
-                                ]),
-                                SizedBox(height: 20),
-                                Row(
-                                  children: [
-                                    SizedBox(width: 20),
-                                    Expanded(
-                                        child: Container(
-                                          color: Color(0xFFe6e6fa),
-                                          child: Form(
-                                            key: formKeyAddTime,
-                                            child: TextFormField(
-                                              validator: (value) {
-                                                // メールアドレスが入力されていない場合
-                                                if (value == null ||
-                                                    value.isEmpty) {
-                                                  // 問題があるときはメッセージを返す
-                                                  return '時間を入力して下さい';
-                                                }
-                                                // 問題ないときはnullを返す
-                                                return null;
+                                          SizedBox(height: 20),
+                                          ElevatedButton(
+                                              onPressed: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        // （2） 実際に表示するページ(ウィジェット)を指定する
+                                                        builder: (context) =>
+                                                            TodoImputCount(
+                                                                date:
+                                                                    widget.date,
+                                                                itemIndex: widget
+                                                                    .itemIndex)));
                                               },
-                                              decoration: InputDecoration(
-                                                  enabledBorder:
-                                                  OutlineInputBorder(
-                                                    borderSide:
-                                                    BorderSide(
-                                                        color: Colors
-                                                            .black),
+                                              child: Text("カウンターで計測する")),
+                                        ])
+                                      : Column(children: [
+                                          Row(children: [
+                                            SizedBox(width: 20),
+                                            Expanded(
+                                                child: Container(
+                                              color: Color(0xFFe6e6fa),
+                                              child: Form(
+                                                key: formKeyEditTime,
+                                                child: TextFormField(
+                                                  validator: (value) {
+                                                    // メールアドレスが入力されていない場合
+                                                    if (value == null ||
+                                                        value.isEmpty) {
+                                                      // 問題があるときはメッセージを返す
+                                                      return '時間を入力して下さい';
+                                                    }
+                                                    // 問題ないときはnullを返す
+                                                    return null;
+                                                  },
+                                                  decoration: InputDecoration(
+                                                      enabledBorder:
+                                                          OutlineInputBorder(
+                                                        borderSide: BorderSide(
+                                                            color:
+                                                                Colors.black),
+                                                      ),
+                                                      labelText: "今日の達成時間"),
+                                                  keyboardType:
+                                                      TextInputType.number,
+                                                  inputFormatters: [
+                                                    FilteringTextInputFormatter
+                                                        .digitsOnly
+                                                  ],
+                                                  textAlign: TextAlign.end,
+                                                  controller:
+                                                      editTimeController,
+                                                ),
+                                              ),
+                                            )),
+                                            SizedBox(width: 20),
+                                            Container(
+                                              height: 50,
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.grey,
+                                                    offset: Offset(1.0, 1.0),
+                                                    blurRadius: 0.8,
+                                                    spreadRadius: 0.8,
                                                   ),
-                                                  labelText: "追加したい時間"),
-                                              keyboardType:
-                                              TextInputType.number,
-                                              inputFormatters: [
-                                                FilteringTextInputFormatter
-                                                    .digitsOnly
-                                              ],
-                                              textAlign: TextAlign.end,
-                                              controller:
-                                              addTimeController,
+                                                ],
+                                              ),
+                                              child:
+                                                  DropdownButtonHideUnderline(
+                                                child: DropdownButton(
+                                                  items: const [
+                                                    DropdownMenuItem(
+                                                      value: 'minute',
+                                                      child: Text('分',
+                                                          style: TextStyle(
+                                                              fontSize: 20)),
+                                                    ),
+                                                    DropdownMenuItem(
+                                                      value: 'hour',
+                                                      child: Text('時間',
+                                                          style: TextStyle(
+                                                              fontSize: 20)),
+                                                    ),
+                                                  ],
+                                                  value:
+                                                      selectedValueEditTimeUnit,
+                                                  onChanged: (String? value) {
+                                                    setState(() {
+                                                      selectedValueEditTimeUnit =
+                                                          value!;
+                                                    });
+                                                  },
+                                                ),
+                                              ),
                                             ),
+                                            SizedBox(width: 20),
+                                            ElevatedButton(
+                                                onPressed: () async {
+                                                  if (formKeyEditTime
+                                                      .currentState!
+                                                      .validate()) {
+                                                    pd.show(msg: "書き込み中...");
+                                                    await firebaseUpdate(
+                                                        "editTime");
+                                                    await checkCompleted(
+                                                        widget.date);
+                                                    pd.close();
+                                                  }
+                                                },
+                                                child: Text("変更")),
+                                            SizedBox(width: 20),
+                                          ]),
+                                          SizedBox(height: 20),
+                                          Row(
+                                            children: [
+                                              SizedBox(width: 20),
+                                              Expanded(
+                                                  child: Container(
+                                                color: Color(0xFFe6e6fa),
+                                                child: Form(
+                                                  key: formKeyAddTime,
+                                                  child: TextFormField(
+                                                    validator: (value) {
+                                                      // メールアドレスが入力されていない場合
+                                                      if (value == null ||
+                                                          value.isEmpty) {
+                                                        // 問題があるときはメッセージを返す
+                                                        return '時間を入力して下さい';
+                                                      }
+                                                      // 問題ないときはnullを返す
+                                                      return null;
+                                                    },
+                                                    decoration: InputDecoration(
+                                                        enabledBorder:
+                                                            OutlineInputBorder(
+                                                          borderSide:
+                                                              BorderSide(
+                                                                  color: Colors
+                                                                      .black),
+                                                        ),
+                                                        labelText: "追加したい時間"),
+                                                    keyboardType:
+                                                        TextInputType.number,
+                                                    inputFormatters: [
+                                                      FilteringTextInputFormatter
+                                                          .digitsOnly
+                                                    ],
+                                                    textAlign: TextAlign.end,
+                                                    controller:
+                                                        addTimeController,
+                                                  ),
+                                                ),
+                                              )),
+                                              SizedBox(width: 20),
+                                              Container(
+                                                height: 50,
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.grey,
+                                                      offset: Offset(1.0, 1.0),
+                                                      blurRadius: 0.8,
+                                                      spreadRadius: 0.8,
+                                                    ),
+                                                  ],
+                                                ),
+                                                child:
+                                                    DropdownButtonHideUnderline(
+                                                  child: DropdownButton(
+                                                    items: const [
+                                                      DropdownMenuItem(
+                                                        value: 'minute',
+                                                        child: Text('分',
+                                                            style: TextStyle(
+                                                                fontSize: 20)),
+                                                      ),
+                                                      DropdownMenuItem(
+                                                        value: 'hour',
+                                                        child: Text('時間',
+                                                            style: TextStyle(
+                                                                fontSize: 20)),
+                                                      ),
+                                                    ],
+                                                    value:
+                                                        selectedValueAddTimeUnit,
+                                                    onChanged: (String? value) {
+                                                      setState(() {
+                                                        selectedValueAddTimeUnit =
+                                                            value!;
+                                                      });
+                                                    },
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(width: 20),
+                                              ElevatedButton(
+                                                  onPressed: () async {
+                                                    if (formKeyAddTime
+                                                        .currentState!
+                                                        .validate()) {
+                                                      pd.show(msg: "書き込み中...");
+                                                      await firebaseUpdate(
+                                                          "addTime");
+                                                      await checkCompleted(
+                                                          widget.date);
+                                                      pd.close();
+                                                    }
+                                                  },
+                                                  child: Text(
+                                                    "追加",
+                                                  )),
+                                              SizedBox(width: 20),
+                                            ],
                                           ),
-                                        )),
-                                    SizedBox(width: 20),
-                                    Container(
-                                      height: 50,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.grey,
-                                            offset: Offset(1.0, 1.0),
-                                            blurRadius: 0.8,
-                                            spreadRadius: 0.8,
-                                          ),
-                                        ],
-                                      ),
-                                      child:
-                                      DropdownButtonHideUnderline(
-                                        child: DropdownButton(
-                                          items: const [
-                                            DropdownMenuItem(
-                                              value: 'minute',
-                                              child: Text('分',
-                                                  style: TextStyle(
-                                                      fontSize: 20)),
-                                            ),
-                                            DropdownMenuItem(
-                                              value: 'hour',
-                                              child: Text('時間',
-                                                  style: TextStyle(
-                                                      fontSize: 20)),
-                                            ),
-                                          ],
-                                          value:
-                                          selectedValueAddTimeUnit,
-                                          onChanged: (String? value) {
-                                            setState(() {
-                                              selectedValueAddTimeUnit =
-                                              value!;
-                                            });
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(width: 20),
-                                    ElevatedButton(
-                                        onPressed: () async {
-                                          if (formKeyAddTime
-                                              .currentState!
-                                              .validate()) {
-                                            pd.show(msg: "書き込み中...");
-                                            await firebaseUpdate(
-                                                "addTime");
-                                            await checkCompleted(widget.date);
-                                            pd.close();
-                                          }
-                                        },
-                                        child: Text(
-                                          "追加",
-                                        )),
-                                    SizedBox(width: 20),
-                                  ],
-                                ),
-                                SizedBox(height: 20),
-                                ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            // （2） 実際に表示するページ(ウィジェット)を指定する
-                                              builder: (context) =>
-                                                  TodoImputTime(date:widget.date,itemIndex:widget.itemIndex)));
-                                    },
-                                    child: Text("タイマーで計測する")),
-                              ])
+                                          SizedBox(height: 20),
+                                          ElevatedButton(
+                                              onPressed: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        // （2） 実際に表示するページ(ウィジェット)を指定する
+                                                        builder: (context) =>
+                                                            TodoImputTime(
+                                                                date:
+                                                                    widget.date,
+                                                                itemIndex: widget
+                                                                    .itemIndex)));
+                                              },
+                                              child: Text("タイマーで計測する")),
+                                        ])
                                   : Container()
                             ]);
                       }

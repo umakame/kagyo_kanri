@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:kagyo_kanri/model/kagyo.dart';
-import 'package:kagyo_kanri/view/main.dart';
+import 'package:kagyo_kanri/main.dart';
 import 'package:sn_progress_dialog/progress_dialog.dart';
 import '../model/function.dart';
 import 'todo_imput.dart';
